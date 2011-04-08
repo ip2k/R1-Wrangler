@@ -1,0 +1,16 @@
+<?php
+$config = array(
+'username' => 'admin',
+'password' => 'CHANGEME-your-r1soft-admin-password',
+'servers' => array(
+  'CHANGEME-some.r1soft.cdp.server.hostname,
+  'CHANGEME-some.other.cdp.server',
+  'CHANGEME-one.more.cdp.servers',
+  'CHANGEME-hostname.of.last.cdp.server'
+  ),
+'dbUser' => 'CHANGEME-some-database-user',
+'dbPass' => 'CHANGEME-some-database-user-password',
+'dbName' => 'CHANGEME-some-database-name',
+'dbHost' => 'CHANGEME-localhost-or-something-else-maybe'
+);
+?>

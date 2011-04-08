@@ -1,0 +1,49 @@
+<?php
+include 'header.html';
+include 'r1.php';
+include 'config.php';
+//$gethost = $_GET['host'];
+
+foreach ($config['servers'] as $thisServer) {
+  $r1 = new r1api($config['username'], $config['password'], $thisServer);
+
+  foreach ($r1->getIDs() as $hostid) {
+    $thisHost = $r1->getHost($hostid);
+
+  // convert disk usage to GiB
+    $thisHost['diskUsage'] = round($thisHost['diskUsage'] / 1074000000, 3);
+
+  // fix host type names
+    if ($thisHost['hostType'] == '1') { 
+      $thisHost['hostType'] == 'Windows';
+    } else {
+      $thisHost['hostType'] == 'Linux';
+    }
+
+  // color row red if host is disabled
+    if ($thisHost['isEnabled'] == '0') { 
+      echo '<tr class="gradeX">';
+      $thisHost['isEnabled'] == 'False';
+    } else {
+      echo '<tr>';
+      $thisHost['isEnabled'] == 'True';
+    }
+
+  // Generate table data
+    echo
+      '<td>' . $thisServer . '</td>' .
+      '<td>' . $thisHost['hostName'] . '</td>' .
+      '<td>' . $thisHost['hostType'] . '</td>' .
+      '<td>' . $thisHost['isEnabled'] . '</td>' .
+      '<td>' . $thisHost['diskUsage'] . '</td>';
+/* prints all the stuff the API gives us
+  foreach ($thisHost as $k => $v) {
+    echo '<td>' . $v . '</td>'; 
+  }
+*/  
+    echo '</tr>';
+  }
+  unset($r1);
+} // foreach server
+include 'footer.html';
+?>

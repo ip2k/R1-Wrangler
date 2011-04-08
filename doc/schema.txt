@@ -1,0 +1,38 @@
+host(id[*], hostID[+], hostName[T], hostType[+], volumeID[+/T], cdp_server_id(T)) // static information that should never change
+host_log (id[*], host_id, poll_id[+], isEnabled[+], isControlPanelModuleEnabled[+], quota[+], diskUsage[+], last_runState, last_timeCompleted, last_taskRunID) // the stuff that can change between polls
+*host_task (id[*], host_id[+], task_id[+]) // stores a list of task UUIDs for each host
+host_log_poll (id[*], poll_run_datetime[+]) // each time the poller runs, put it here.  poll_run_datetime is unix timestamp format
+server (id[*], cdp_hostname[T])
+	
+// select to display output
+SELECT
+  host_log.isEnabled,
+  host_log.isControlPanelModuleEnabled,
+  host_log.quota,
+  host_log.diskUsage,
+  host.hostName,
+  host.hostType,
+  server.cdp_hostname
+FROM host_log
+JOIN (host, server)
+  ON (host_log.host_id = host.id
+    AND host.cdp_server_id = server.id) 
+  WHERE host_log.poll_id = 
+    (SELECT MAX(`id`) 
+    FROM host_log_poll) 
+limit 10;
+
+
+SELECT `host_log.*` FROM `host_log` WHERE `poll_id` = (SELECT MAX(`id`) FROM `host_log_poll`) JOIN `host` ON `host_log.host_id` = `host.id`
+
+SELECT * from host_log JOIN host on host_log.host_id = host.id WHERE host_log.poll_id = (SELECT MAX(`id`) FROM host_log_poll) limit 10;
+
+//// insert
+// start run
+INSERT INTO `host_log_poll` (poll_run_datetime) VALUES (UNIX_TIMESTAMP());
+
+
+foreach server in servers
+  INSERT INTO `host_log' (host_id, poll_id, isEnabled, isControlPanelModuleEnabled, quota, diskUsage)
+  VALUES ((SELECT `id` FROM `host` WHERE `host.host_id` = $server['hostID']), (SELECT MAX(`id`) 
+    FROM `host_log_poll`), $server['isEnabled'], $server['isControlPanelModuleEnabled'], $server['quota'], $server['diskUsage']);

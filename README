@@ -1,0 +1,2 @@
+WORK IN PROGRESS
+R1Soft CDP Server Wrangler. Used to keep track of and manage backups across multiple R1Soft CDP servers. Designed for datacenter use and scales to thousands of servers being backed up by R1Soft.

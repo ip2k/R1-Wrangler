@@ -1,0 +1,17 @@
+|index.php
+--\header.html
+--\footer.html
+--\db.php
+----\config.php
+
+|poll.php
+--\ db.php
+----\config.php
+--\ r1.php
+----\xmlrpc.inc
+
+|db.php
+--\config.php
+
+|r1.php
+--\xmlrpc.inc
